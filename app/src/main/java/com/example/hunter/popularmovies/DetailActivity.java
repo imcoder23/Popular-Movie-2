@@ -94,64 +94,6 @@ public class DetailActivity extends AppCompatActivity {
                 .fit()
                 .into(detail_moviePic);
 
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//
-//        fb_button.setOnFavoriteChangeListener(
-//                new MaterialFavoriteButton.OnFavoriteChangeListener() {
-//                    @Override
-//                    public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-//                        if (favorite) {
-//                            SharedPreferences.Editor editor = getSharedPreferences("com.example.hunter.popularmovies.DetailActivity", MODE_PRIVATE).edit();
-//                            editor.putBoolean("Favourite Added", true);
-//                            editor.commit();
-//                            save_Favourite();
-//                            Snackbar.make(buttonView, "Added to Favorite", Snackbar.LENGTH_SHORT).show();
-//                        } else {
-//                            int movie_id = getIntent().getExtras().getInt("id");
-//                           favouriteDbHelper = new FavouriteDbHelper(DetailActivity.this);
-//                           favouriteDbHelper.DelFavMovie(movie_id);
-//
-//                            SharedPreferences.Editor editor = getSharedPreferences("com.example.hunter.popularmovies.DetailActivity", MODE_PRIVATE).edit();
-//                            editor.putBoolean("Favorite Removed", true);
-//                            editor.commit();
-//                            Snackbar.make(buttonView, "Removed from Favorite", Snackbar.LENGTH_SHORT).show();
-//                        }
-//
-//                    }
-//
-//
-//                    private void save_Favourite() {
-//                        favouriteDbHelper = new FavouriteDbHelper(activity);
-//                        favourite = new Movie();
-////                        int movie_id = getIntent().getExtras().getInt("id");
-////                        String rate = getIntent().getExtras().getString("vote_average");
-////                        String poster = getIntent().getExtras().getString("poster_path");
-//
-//                        Log.d("Movie_id", String.valueOf(movie_id));
-//                        Log.d("Movie_Title", String.valueOf(Title));
-//                        Log.d("Movie_Poster", (Poster));
-//                        Log.d("Movie_Release", (release));
-//                        Log.d("Movie_Rating", (rating));
-//                        Log.d("Movie_Plot", plot);
-//
-//                        favourite.setId(movie_id);
-//                        favourite.setMovie_title(Title);
-//                        favourite.setMovie_poster(Poster);
-//                        favourite.setMovie_releasedate(release);
-//                        favourite.setMovie_rating(rating);
-//                        favourite.setMovie_plot(plot);
-//
-////                        boolean addmov = addFavMovie(favourite);
-////                        if (!addmov){
-////
-////                        }else{
-//                        favouriteDbHelper.addFavMovie(favourite);
-////                    }
-//
-//                    }
-//                }
-//        );
-
         if(checkExists(movie_id)){
             fb_button.setFavorite(true);
             fb_button.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
@@ -208,26 +150,13 @@ public class DetailActivity extends AppCompatActivity {
             final String release = intent.getStringExtra("releaseDate");
             final int movie_id = intent.getIntExtra("id", 0);
 
-//                        Log.d("Movie_id", String.valueOf(movie_id));
-//                        Log.d("Movie_Title", String.valueOf(Title));
-//                        Log.d("Movie_Poster", (Poster));
-//                        Log.d("Movie_Release", (release));
-//                        Log.d("Movie_Rating", (rating));
-//                        Log.d("Movie_Plot", plot);
-//
             favourite.setId(movie_id);
             favourite.setMovie_title(Title);
             favourite.setMovie_poster(Poster);
             favourite.setMovie_releasedate(release);
             favourite.setMovie_rating(rating);
             favourite.setMovie_plot(plot);
-//
-////                        boolean addmov = addFavMovie(favourite);
-////                        if (!addmov){
-////
-////                        }else{
             favouriteDbHelper.addFavMovie(favourite);
-////                    }
 
     }
 
@@ -272,7 +201,7 @@ public class DetailActivity extends AppCompatActivity {
         int movie_id = getIntent().getExtras().getInt("id");
 
         URL Url_reviews = MovieUrlUtils.buildUrlReview(String.valueOf(movie_id),"/reviews");
-//        String Url_reviews ="https://api.themoviedb.org/3/movie/"+movie_id+"/reviews?api_key=2d0e8d737c7a9f7ec6d58839b3f1b8a4";
+
 
         JsonObjectRequest request = new JsonObjectRequest(com.android.volley.Request.Method.GET, Url_reviews.toString(), null,
                 new Response.Listener<JSONObject>() {
@@ -324,7 +253,7 @@ public class DetailActivity extends AppCompatActivity {
     private void load_trailerJson() {
         int movie_id = getIntent().getExtras().getInt("id");
 
-//        String Url_trailer ="https://api.themoviedb.org/3/movie/"+movie_id+"/videos?api_key=2d0e8d737c7a9f7ec6d58839b3f1b8a4";
+
         URL Url_trailer = MovieUrlUtils.buildUrlTrailers(String.valueOf(movie_id),"/videos");
 
 
