@@ -21,4 +21,6 @@
     <string name="movie_name">Movies Name</string>
     <string name="movie_image">Movie Image</string>
     <string name="youtube">Youtube Image</string>
+    <string name="row_failed">Database Insert Failed</string>
+    <string name="unknown_uri">Unknown URL</string>
 </resources>

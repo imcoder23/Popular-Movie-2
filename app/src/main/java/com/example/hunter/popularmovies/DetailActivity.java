@@ -1,8 +1,11 @@
 package com.example.hunter.popularmovies;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -103,10 +106,8 @@ public class DetailActivity extends AppCompatActivity {
                         saveFavourite();
                         Snackbar.make(buttonView, "Added to Favorite", Snackbar.LENGTH_SHORT).show();
                     }else{
-                        favouriteDbHelper = new FavouriteDbHelper(DetailActivity.this);
-                          favouriteDbHelper.DelFavMovie(movie_id);
-                           adapter.notifyDataSetChanged();
-                          Snackbar.make(buttonView, "Removed from Favorite", Snackbar.LENGTH_SHORT).show();
+                          delFavourite(movie_id);
+                        Snackbar.make(buttonView, "Removed from Favorite", Snackbar.LENGTH_SHORT).show();
 
                     }
                 }
@@ -121,9 +122,7 @@ public class DetailActivity extends AppCompatActivity {
                         Snackbar.make(buttonView, "Added to Favorite", Snackbar.LENGTH_SHORT).show();
                     }else{
                         int movie_id = getIntent().getExtras().getInt("id");
-                          favouriteDbHelper = new FavouriteDbHelper(DetailActivity.this);
-                           favouriteDbHelper.DelFavMovie(movie_id);
-                        adapter.notifyDataSetChanged();
+                        delFavourite(movie_id);
                         Snackbar.make(buttonView, "Removed from Favorite", Snackbar.LENGTH_SHORT).show();
                     }
                 }
@@ -133,6 +132,14 @@ public class DetailActivity extends AppCompatActivity {
             init_trailer();
     }
 
+    private void delFavourite(int movie_id) {
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = FavouriteContract.FavouriteEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(String.valueOf(movie_id)).build();
+
+        contentResolver.delete(uri,null,null);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -140,24 +147,15 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void saveFavourite() {
-            favouriteDbHelper = new FavouriteDbHelper(activity);
-        Movie favourite = new Movie();
-            Intent intent = getIntent();
-            final String Title = intent.getStringExtra("title");
-            final String Poster = intent.getStringExtra("poster");
-            final String plot = intent.getStringExtra("plot");
-            final String rating = intent.getStringExtra("rating");
-            final String release = intent.getStringExtra("releaseDate");
-            final int movie_id = intent.getIntExtra("id", 0);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FavouriteContract.FavouriteEntry.COLUMN_MovieID,getIntent().getIntExtra("id", 0));
+        contentValues.put(FavouriteContract.FavouriteEntry.COLUMN_Title,getIntent().getStringExtra("title"));
+        contentValues.put(FavouriteContract.FavouriteEntry.COLUMN_Poster_Path,getIntent().getStringExtra("poster"));
+        contentValues.put(FavouriteContract.FavouriteEntry.COLUMN_Plot_Sypnosis,getIntent().getStringExtra("plot"));
+        contentValues.put(FavouriteContract.FavouriteEntry.COLUMN_Userrating,getIntent().getStringExtra("rating"));
+        contentValues.put(FavouriteContract.FavouriteEntry.COLUMN_Release,getIntent().getStringExtra("releaseDate"));
 
-            favourite.setId(movie_id);
-            favourite.setMovie_title(Title);
-            favourite.setMovie_poster(Poster);
-            favourite.setMovie_releasedate(release);
-            favourite.setMovie_rating(rating);
-            favourite.setMovie_plot(plot);
-            favouriteDbHelper.addFavMovie(favourite);
-
+        getContentResolver().insert(FavouriteContract.FavouriteEntry.CONTENT_URI,contentValues);
     }
 
 

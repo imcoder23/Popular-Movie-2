@@ -3,6 +3,7 @@ package com.example.hunter.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -33,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hunter.popularmovies.Adapter.movieAdapter;
+import com.example.hunter.popularmovies.Data.FavouriteContract;
 import com.example.hunter.popularmovies.Data.FavouriteDbHelper;
 import com.example.hunter.popularmovies.Model.Movie;
 import com.example.hunter.popularmovies.Model.SettingActivity;
@@ -270,7 +272,38 @@ public class MainActivity extends AppCompatActivity implements movieAdapter.OnIt
         @Override
         protected Void doInBackground(Void... voids) {
             moviesList.clear();
-            moviesList.addAll(favouriteDbHelper.getallFavorite());
+//            moviesList.addAll(favouriteDbHelper.getallFavorite());
+           Cursor cursor =  getContentResolver().query(FavouriteContract.FavouriteEntry.CONTENT_URI,
+                   null,
+                   null,
+                   null,
+                   FavouriteContract.FavouriteEntry._ID + " ASC");
+            List<Movie> favouritelist = new ArrayList<>();
+
+            if(cursor.moveToFirst()){
+                do{
+                    Movie movie = new Movie();
+                    movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_MovieID))));
+                    movie.setMovie_title(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Title)));
+//                    movie.setMovie_rating(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Userrating)));
+                    movie.setMovie_poster(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Poster_Path)));
+                    movie.setMovie_plot(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Plot_Sypnosis)));
+                    movie.setMovie_rating(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Userrating)));
+                    movie.setMovie_releasedate(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Release)));
+
+                    Log.d("1",cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_MovieID)));
+                    Log.d("2",cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Title)));
+                    Log.d("3",cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Userrating)));
+                    Log.d("4",cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Plot_Sypnosis)));
+                    Log.d("5",cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Poster_Path)));
+                    Log.d("6",cursor.getString(cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_Release)));
+
+                    favouritelist.add(movie);
+                }while(cursor.moveToNext());
+            }
+            cursor.close();
+            moviesList.addAll(favouritelist);
+
             return null;
         }
 
